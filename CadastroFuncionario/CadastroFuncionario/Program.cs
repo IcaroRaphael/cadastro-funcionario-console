@@ -240,6 +240,7 @@ bool CpfExiste(string cpf)
         if(funcionario["CPF"] == cpf)
         {
             contCpf++;
+            break;
         }
     }
     if(contCpf == 0)
