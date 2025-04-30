@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 List<Dictionary<string, string>> funcionarios = new List<Dictionary<string, string>>();
 
@@ -56,8 +57,7 @@ void CadastrarFuncionario()
         Console.Write("CARGO: ");
         string cargo = Console.ReadLine();
         string salario = ValidarSalario();
-        Console.Write("TELEFONE: ");
-        string telefone = Console.ReadLine();
+        string telefone = ValidarTelefone();
         funcionarios.Add(new Dictionary<string, string>{
             {"CPF", cpf},
             {"NOME", nome},
@@ -139,9 +139,7 @@ void AtualizarFuncionario()
                                 executar2 = false;
                                 break;
                             case 4:
-                                Console.Write("TELEFONE: ");
-                                string telefoneAtualizado = Console.ReadLine();
-                                funcionario["TELEFONE"] = telefoneAtualizado;
+                                funcionario["TELEFONE"] = ValidarTelefone();
                                 Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
                                 executar2 = false;
                                 break;
@@ -266,25 +264,49 @@ string ValidarSalario()
             Console.WriteLine("INSIRA APENAS NÚMEROS.");
         }
     }
-    return string.Format($"R${salarioValidado:F2}");
+    return string.Format($"{salarioValidado:C}");
 }
 
-// Em Desenvolvimento
 string ValidarTelefone()
 {
-    double salarioValidado = 0;
-    bool executarValidarSalario = true;
-    while (executarValidarSalario)
+    string telefoneVerificado = "";
+    bool executarValidarTelefone = true;
+    while (executarValidarTelefone)
     {
-        Console.Write("SALARIO: ");
-        if (double.TryParse(Console.ReadLine(), out salarioValidado))
+        Console.Write("NÚMERO DE CELULAR (xx)xxxxx-xxxx: ");
+        Regex pegaNumeros = new Regex(@"[^\d]");
+        telefoneVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
+        if(telefoneVerificado.Length == 11)
         {
-            executarValidarSalario = false;
+            string[] ListaCodigos = new string[]
+                {
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19",
+                    "21", "22", "24", "27", "28",
+                    "31", "32", "33", "34", "35", "37", "38",
+                    "41", "42", "43", "44", "45", "46",
+                    "47", "48", "49",
+                    "51", "53", "54", "55",
+                    "61", "62", "63", "64",
+                    "65", "66", "67", "68", "69",
+                    "71", "73", "74", "75", "77", "79",
+                    "81", "82", "83", "84", "85", "86", "87", "88", "89",
+                    "91", "92", "93", "94", "95", "96", "97", "98", "99"
+                };
+            string ddd = telefoneVerificado.Substring(0,2);
+            if (ListaCodigos.Contains(ddd))
+            {
+                telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 5)}-{telefoneVerificado.Substring(7, 4)}");
+                executarValidarTelefone = false;
+            }
+            else
+            {
+                Console.WriteLine("DDD INVÁLIDO. POR FAVOR INSIRA UM CÓDIGO EXISTENTE.");
+            }
         }
         else
         {
-            Console.WriteLine("INSIRA APENAS NÚMEROS.");
+            Console.WriteLine("TELEFONE PRECISA TER 11 NÚMEROS (DDD = 2 DíGITOS) + (NÚMERO = 9 DíGITOS).");
         }
     }
-    return string.Format($"R${salarioValidado:F2}");
+    return telefoneVerificado;
 }
