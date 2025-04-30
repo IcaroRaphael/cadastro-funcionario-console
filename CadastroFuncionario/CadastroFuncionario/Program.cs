@@ -55,8 +55,7 @@ void CadastrarFuncionario()
         string nome = Console.ReadLine();
         Console.Write("CARGO: ");
         string cargo = Console.ReadLine();
-        Console.Write("SALARIO: ");
-        string salario = Console.ReadLine();
+        string salario = ValidarSalario();
         Console.Write("TELEFONE: ");
         string telefone = Console.ReadLine();
         funcionarios.Add(new Dictionary<string, string>{
@@ -135,9 +134,7 @@ void AtualizarFuncionario()
                                 executar2 = false;
                                 break;
                             case 3:
-                                Console.Write("SALARIO: ");
-                                string salarioAtualizado = Console.ReadLine();
-                                funcionario["SALARIO"] = salarioAtualizado;
+                                funcionario["SALARIO"] = ValidarSalario();
                                 Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
                                 executar2 = false;
                                 break;
@@ -215,7 +212,6 @@ int Menu()
     return num;
 }
 
-
 int MenuAtualizar()
 {
     int num = 0;
@@ -252,4 +248,43 @@ bool CpfExiste(string cpf)
     {
         return true;
     }
+}
+
+string ValidarSalario()
+{
+    double salarioValidado = 0;
+    bool executarValidarSalario = true;
+    while (executarValidarSalario)
+    {
+        Console.Write("SALARIO: ");
+        if (double.TryParse(Console.ReadLine(), out salarioValidado))
+        {
+            executarValidarSalario = false;
+        }
+        else
+        {
+            Console.WriteLine("INSIRA APENAS NÚMEROS.");
+        }
+    }
+    return string.Format($"R${salarioValidado:F2}");
+}
+
+// Em Desenvolvimento
+string ValidarTelefone()
+{
+    double salarioValidado = 0;
+    bool executarValidarSalario = true;
+    while (executarValidarSalario)
+    {
+        Console.Write("SALARIO: ");
+        if (double.TryParse(Console.ReadLine(), out salarioValidado))
+        {
+            executarValidarSalario = false;
+        }
+        else
+        {
+            Console.WriteLine("INSIRA APENAS NÚMEROS.");
+        }
+    }
+    return string.Format($"R${salarioValidado:F2}");
 }
