@@ -74,22 +74,23 @@ void CadastrarFuncionario()
 void VisualizarFuncionarios()
 {
     Console.Clear();
-    if (funcionarios.Count == 0)
-    {
-        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
-    }
-    else
+    if(funcionarios.Count > 0)
     {
         Console.WriteLine("## VISUALIZANDO FUNCIONÁRIOS ##\n");
         Console.WriteLine("----------");
-        foreach (var funcionario in funcionarios)
+        for (int i = 0; i < funcionarios.Count; i++)
         {
-            foreach (var campo in funcionario)
+            Console.WriteLine($"ID: {i + 1}");
+            foreach (var campo in funcionarios[i])
             {
                 Console.WriteLine($"{campo.Key}: {campo.Value}");
             }
             Console.WriteLine("----------");
         }
+    }
+    else
+    {
+        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
 }
 
