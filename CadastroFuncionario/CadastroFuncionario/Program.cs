@@ -103,7 +103,7 @@ void AtualizarFuncionario()
     }
     else
     {
-        Console.Write("CPF: ");
+        Console.Write("CPF (XXX.XXX.XXX-XX): ");
         string cpf = Console.ReadLine();
         
         if (CpfExiste(cpf))
@@ -170,7 +170,7 @@ void DeletarFuncionario()
     }
     else
     {
-        Console.Write("CPF: ");
+        Console.Write("CPF (XXX.XXX.XXX-XX): ");
         string cpf = Console.ReadLine();
         if (CpfExiste(cpf))
         {
@@ -272,10 +272,10 @@ string ValidarTelefone()
     bool executarValidarTelefone = true;
     while (executarValidarTelefone)
     {
-        Console.Write("Telefone (xx)xxxxx-xxxx: ");
+        Console.Write("Telefone (DDD)9XXXX-XXXX/(DDD)XXXX-XXXX: ");
         Regex pegaNumeros = new Regex(@"[^\d]");
         telefoneVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if(telefoneVerificado.Length == 11 || telefoneVerificado.Length == 10)
+        if((telefoneVerificado.Length == 11 || telefoneVerificado.Length == 10) && (telefoneVerificado[2].ToString() == "9"))
         {
             string[] ListaCodigos = new string[]
                 {
@@ -308,12 +308,12 @@ string ValidarTelefone()
             }
             else
             {
-                Console.WriteLine("DDD INVÁLIDO. POR FAVOR INSIRA UM CÓDIGO EXISTENTE.");
+                Console.WriteLine("DDD INVÁLIDO. POR FAVOR INSIRA UM DDD VÁLIDO.");
             }
         }
         else
         {
-            Console.WriteLine("TELEFONE PRECISA TER 10 OU 11 NÚMEROS (DDD = 2 DíGITOS) + (NÚMERO = 8 OU 9 DíGITOS).");
+            Console.WriteLine("TELEFONE INVÁLIDO. POR FAVOR INSIRA UM TELEFONE VÁLIDO.");
         }
     }
     return telefoneVerificado;
@@ -384,7 +384,7 @@ string ValidarCpf()
             }
             else
             {
-                Console.WriteLine("CPF INVÁLIDO. INSIRA UM CPF VÁLIDO.");
+                Console.WriteLine("CPF INVÁLIDO. POR FAVOR INSIRA UM CPF VÁLIDO.");
             }
         }
         else
@@ -392,5 +392,5 @@ string ValidarCpf()
             Console.WriteLine("CPF PRECISA TER 11 NÚMEROS.");
         }
     }
-    return cpfVerificado;
+    return string.Format($"{cpfVerificado.Substring(0, 3)}.{cpfVerificado.Substring(3, 3)}.{cpfVerificado.Substring(6, 3)}-{cpfVerificado.Substring(9, 2)}");
 }
