@@ -74,13 +74,13 @@ void CadastrarFuncionario()
 void VisualizarFuncionarios()
 {
     Console.Clear();
-    Console.WriteLine("## VISUALIZANDO FUNCIONÁRIOS ##\n");
     if (funcionarios.Count == 0)
     {
         Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
     else
     {
+        Console.WriteLine("## VISUALIZANDO FUNCIONÁRIOS ##\n");
         Console.WriteLine("----------");
         foreach (var funcionario in funcionarios)
         {
@@ -96,13 +96,14 @@ void VisualizarFuncionarios()
 void AtualizarFuncionario()
 {
     Console.Clear();
-    Console.WriteLine("## ATUALIZANDO FUNCIONÁRIO ##\n");
     if (funcionarios.Count == 0)
     {
         Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
     else
     {
+        VisualizarFuncionarios();
+        Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
         Console.Write("CPF (XXX.XXX.XXX-XX): ");
         string cpf = Console.ReadLine();
         
@@ -163,13 +164,14 @@ void AtualizarFuncionario()
 void DeletarFuncionario()
 {
     Console.Clear();
-    Console.WriteLine("## DELETANDO FUNCIONÁRIO ##\n");
     if (funcionarios.Count == 0)
     {
         Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
     else
     {
+        VisualizarFuncionarios();
+        Console.WriteLine("\n## DELETANDO FUNCIONÁRIO ##");
         Console.Write("CPF (XXX.XXX.XXX-XX): ");
         string cpf = Console.ReadLine();
         if (CpfExiste(cpf))
@@ -275,7 +277,7 @@ string ValidarTelefone()
         Console.Write("Telefone (DDD)9XXXX-XXXX/(DDD)XXXX-XXXX: ");
         Regex pegaNumeros = new Regex(@"[^\d]");
         telefoneVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if((telefoneVerificado.Length == 11 || telefoneVerificado.Length == 10) && (telefoneVerificado[2].ToString() == "9"))
+        if((telefoneVerificado.Length == 10) || (telefoneVerificado.Length == 11 && telefoneVerificado[2].ToString() == "9"))
         {
             string[] ListaCodigos = new string[]
                 {
