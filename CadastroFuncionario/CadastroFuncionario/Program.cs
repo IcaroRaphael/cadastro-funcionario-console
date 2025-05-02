@@ -329,68 +329,59 @@ string ValidarCpf()
         Console.Write("CPF: ");
         Regex pegaNumeros = new Regex(@"[^\d]");
         cpfVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if (cpfVerificado.Length == 11)
+        if (CpfValido(cpfVerificado))
         {
-            // VALIDANDO O PRIMEIRO DIGITO VERIFICADOR
-            int digitoCorreto1;
-            int digitoVerificadorInserido1 = (cpfVerificado[9] - '0'); // Converte o caractere 9 para inteiro
-            int soma1 = 0;
-            int decremento1 = 10;
-            for (int i = 0; i < 9; i++)
-            {
-                soma1 += ((cpfVerificado[i] - '0') * decremento1);
-                decremento1--;
-            }
-            int resto1 = soma1 % 11;
-            if(resto1 == 0 || resto1 == 1)
-            {
-                //Primeiro digito vertificador é 0
-                digitoCorreto1 = 0;
-            }
-            else
-            {
-                //Primeiro digito vertificador é 11 - resto
-                digitoCorreto1 = 11 - resto1;
-            }
-
-
-            // VALIDANDO O SEGUNDO DIGITO VERIFICADOR
-            int digitoCorreto2;
-            int digitoVerificadorInserido2 = (cpfVerificado[10] - '0'); // Converte o caractere 10 para inteiro
-            int soma2 = 0;
-            int decremento2 = 11;
-            for (int i = 0; i < 10; i++)
-            {
-                soma2 += ((cpfVerificado[i] - '0') * decremento2);
-                decremento2--;
-            }
-            int resto2 = soma2 % 11;
-            if (resto2 == 0 || resto2 == 1)
-            {
-                //Segundo digito vertificador é 0
-                digitoCorreto2 = 0;
-            }
-            else
-            {
-                //Segundo digito vertificador é 11 - resto
-                digitoCorreto2 = 11 - resto2;
-            }
-
-
-            // VERIFICANDO SE O CPF É VÁLIDO
-            if ((digitoVerificadorInserido1 == digitoCorreto1) && (digitoVerificadorInserido2 == digitoCorreto2) && (cpfVerificado != new string(cpfVerificado[0], 11)))
-            {
-                executarValidarCpf = false;
-            }
-            else
-            {
-                Console.WriteLine("CPF INVÁLIDO. POR FAVOR INSIRA UM CPF VÁLIDO.");
-            }
+            executarValidarCpf = false;
         }
         else
         {
-            Console.WriteLine("CPF PRECISA TER 11 NÚMEROS.");
+            Console.WriteLine("CPF INVÁLIDO. POR FAVOR INSIRA UM CPF VÁLIDO.");
         }
     }
     return string.Format($"{cpfVerificado.Substring(0, 3)}.{cpfVerificado.Substring(3, 3)}.{cpfVerificado.Substring(6, 3)}-{cpfVerificado.Substring(9, 2)}");
+}
+
+
+bool CpfValido(string cpf)
+{
+    if((cpf.Length != 11) || (cpf == new string(cpf[0], 11)))
+    {
+        return false;
+    }
+
+    int digitoVerificadorCorreto1 = 0;
+    int digitoVerificadorCorreto2 = 0;
+    for(int i = 2; i > 0; i--)
+    {
+        int soma = 0;
+        for(int j = 0; j < cpf.Length-i; j++)
+        {
+            soma += (cpf[j] - '0') * (12 - i - j);
+        }
+        if(soma % 11 == 0 || soma % 11 == 1)
+        {
+            if(i == 2)
+            {
+                digitoVerificadorCorreto1 = 0;
+            } else if(i == 1)
+            {
+                digitoVerificadorCorreto2 = 0;
+            }
+        } else
+        {
+            if (i == 2)
+            {
+                digitoVerificadorCorreto1 = 11 - (soma % 11);
+            }
+            else if (i == 1)
+            {
+                digitoVerificadorCorreto2 = 11 - (soma % 11);
+            }
+        }
+    }
+    if(((cpf[9] - '0') != digitoVerificadorCorreto1) || ((cpf[10] - '0') != digitoVerificadorCorreto2))
+    {
+        return false;
+    }
+    return true;
 }
