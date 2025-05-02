@@ -48,8 +48,7 @@ void CadastrarFuncionario()
 {
     Console.Clear();
     Console.WriteLine("## CADASTRANDO FUNCIONÁRIO ##\n");
-    Console.Write("CPF: ");
-    string cpf = Console.ReadLine();
+    string cpf = ValidarCpf();
     if (!CpfExiste(cpf))
     {
         Console.Write("NOME: ");
@@ -273,10 +272,10 @@ string ValidarTelefone()
     bool executarValidarTelefone = true;
     while (executarValidarTelefone)
     {
-        Console.Write("NÚMERO DE CELULAR (xx)xxxxx-xxxx: ");
+        Console.Write("Telefone (xx)xxxxx-xxxx: ");
         Regex pegaNumeros = new Regex(@"[^\d]");
         telefoneVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if(telefoneVerificado.Length == 11)
+        if(telefoneVerificado.Length == 11 || telefoneVerificado.Length == 10)
         {
             string[] ListaCodigos = new string[]
                 {
@@ -293,9 +292,18 @@ string ValidarTelefone()
                     "91", "92", "93", "94", "95", "96", "97", "98", "99"
                 };
             string ddd = telefoneVerificado.Substring(0,2);
+            
+
             if (ListaCodigos.Contains(ddd))
             {
-                telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 5)}-{telefoneVerificado.Substring(7, 4)}");
+                if (telefoneVerificado.Length == 10)
+                {
+                    telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 4)}-{telefoneVerificado.Substring(6, 4)}");
+                }
+                else if (telefoneVerificado.Length == 11)
+                {
+                    telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 5)}-{telefoneVerificado.Substring(7, 4)}");
+                }
                 executarValidarTelefone = false;
             }
             else
@@ -305,8 +313,84 @@ string ValidarTelefone()
         }
         else
         {
-            Console.WriteLine("TELEFONE PRECISA TER 11 NÚMEROS (DDD = 2 DíGITOS) + (NÚMERO = 9 DíGITOS).");
+            Console.WriteLine("TELEFONE PRECISA TER 10 OU 11 NÚMEROS (DDD = 2 DíGITOS) + (NÚMERO = 8 OU 9 DíGITOS).");
         }
     }
     return telefoneVerificado;
+}
+
+
+string ValidarCpf()
+{
+    string cpfVerificado = "";
+    bool executarValidarCpf = true;
+    while (executarValidarCpf)
+    {
+        Console.Write("CPF: ");
+        Regex pegaNumeros = new Regex(@"[^\d]");
+        cpfVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
+        if (cpfVerificado.Length == 11)
+        {
+            // VALIDANDO O PRIMEIRO DIGITO VERIFICADOR
+            int digitoCorreto1;
+            int digitoVerificadorInserido1 = (cpfVerificado[9] - '0'); // Converte o caractere 9 para inteiro
+            int soma1 = 0;
+            int decremento1 = 10;
+            for (int i = 0; i < 9; i++)
+            {
+                soma1 += ((cpfVerificado[i] - '0') * decremento1);
+                decremento1--;
+            }
+            int resto1 = soma1 % 11;
+            if(resto1 == 0 || resto1 == 1)
+            {
+                //Primeiro digito vertificador é 0
+                digitoCorreto1 = 0;
+            }
+            else
+            {
+                //Primeiro digito vertificador é 11 - resto
+                digitoCorreto1 = 11 - resto1;
+            }
+
+
+            // VALIDANDO O SEGUNDO DIGITO VERIFICADOR
+            int digitoCorreto2;
+            int digitoVerificadorInserido2 = (cpfVerificado[10] - '0'); // Converte o caractere 10 para inteiro
+            int soma2 = 0;
+            int decremento2 = 11;
+            for (int i = 0; i < 10; i++)
+            {
+                soma2 += ((cpfVerificado[i] - '0') * decremento2);
+                decremento2--;
+            }
+            int resto2 = soma2 % 11;
+            if (resto2 == 0 || resto2 == 1)
+            {
+                //Segundo digito vertificador é 0
+                digitoCorreto2 = 0;
+            }
+            else
+            {
+                //Segundo digito vertificador é 11 - resto
+                digitoCorreto2 = 11 - resto2;
+            }
+
+
+            // VERIFICANDO SE O CPF É VÁLIDO
+            if ((digitoVerificadorInserido1 == digitoCorreto1) && (digitoVerificadorInserido2 == digitoCorreto2) && (cpfVerificado != new string(cpfVerificado[0], 11)))
+            {
+                executarValidarCpf = false;
+            }
+            else
+            {
+                Console.WriteLine("CPF INVÁLIDO. INSIRA UM CPF VÁLIDO.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("CPF PRECISA TER 11 NÚMEROS.");
+        }
+    }
+    return cpfVerificado;
 }
