@@ -80,7 +80,7 @@ void VisualizarFuncionarios()
         Console.WriteLine("----------");
         for (int i = 0; i < funcionarios.Count; i++)
         {
-            Console.WriteLine($"ID: {i + 1}");
+            Console.WriteLine($"ID: {i}");
             foreach (var campo in funcionarios[i])
             {
                 Console.WriteLine($"{campo.Key}: {campo.Value}");
@@ -97,100 +97,70 @@ void VisualizarFuncionarios()
 void AtualizarFuncionario()
 {
     Console.Clear();
-    if (funcionarios.Count == 0)
-    {
-        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
-    }
-    else
+    if (funcionarios.Count > 0)
     {
         VisualizarFuncionarios();
         Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
-        Console.Write("CPF (XXX.XXX.XXX-XX): ");
-        string cpf = Console.ReadLine();
-        
-        if (CpfExiste(cpf))
+        int id = ValidarId();
+
+        bool executaAtualizarFuncionario = true;
+        while (executaAtualizarFuncionario)
         {
-            foreach(var funcionario in funcionarios)
+            int escolha = MenuAtualizar();
+            switch (escolha)
             {
-                if (funcionario["CPF"] == cpf)
-                {
-                    bool executar2 = true;
-                    while (executar2)
-                    {
-                        int escolha = MenuAtualizar();
-                        switch (escolha)
-                        {
-                            case 1:
-                                Console.Write("NOME: ");
-                                string nomeAtualizado = Console.ReadLine();
-                                funcionario["NOME"] = nomeAtualizado;
-                                Console.WriteLine("NOME ATUALIZADO COM SUCESSO.");
-                                executar2 = false;
-                                break;
-                            case 2:
-                                Console.Write("CARGO: ");
-                                string cargoAtualizado = Console.ReadLine();
-                                funcionario["CARGO"] = cargoAtualizado;
-                                Console.WriteLine("CARGO ATUALIZADO COM SUCESSO.");
-                                executar2 = false;
-                                break;
-                            case 3:
-                                funcionario["SALARIO"] = ValidarSalario();
-                                Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
-                                executar2 = false;
-                                break;
-                            case 4:
-                                funcionario["TELEFONE"] = ValidarTelefone();
-                                Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
-                                executar2 = false;
-                                break;
-                            default:
-                                Console.WriteLine("OPÇÃO INVÁLIDA.");
-                                Console.WriteLine("\nPressione qualquer tecla para tentar novamente...");
-                                Console.ReadKey();
-                                break;
-                        }
-                    }
+                case 1:
+                    Console.Write("NOME: ");
+                    string nomeAtualizado = Console.ReadLine();
+                    funcionarios[id]["NOME"] = nomeAtualizado;
+                    Console.WriteLine("NOME ATUALIZADO COM SUCESSO.");
+                    executaAtualizarFuncionario = false;
                     break;
-                }
+                case 2:
+                    Console.Write("CARGO: ");
+                    string cargoAtualizado = Console.ReadLine();
+                    funcionarios[id]["CARGO"] = cargoAtualizado;
+                    Console.WriteLine("CARGO ATUALIZADO COM SUCESSO.");
+                    executaAtualizarFuncionario = false;
+                    break;
+                case 3:
+                    funcionarios[id]["SALARIO"] = ValidarSalario();
+                    Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
+                    executaAtualizarFuncionario = false;
+                    break;
+                case 4:
+                    funcionarios[id]["TELEFONE"] = ValidarTelefone();
+                    Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
+                    executaAtualizarFuncionario = false;
+                    break;
+                default:
+                    Console.WriteLine("OPÇÃO INVÁLIDA.");
+                    Console.WriteLine("\nPressione qualquer tecla para tentar novamente...");
+                    Console.ReadKey();
+                    break;
             }
         }
-        else
-        {
-            Console.WriteLine("CPF NÃO ENCONTRADO.");
-        }
+    }
+    else
+    {
+        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
 }
 
 void DeletarFuncionario()
 {
     Console.Clear();
-    if (funcionarios.Count == 0)
-    {
-        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
-    }
-    else
+    if(funcionarios.Count > 0)
     {
         VisualizarFuncionarios();
         Console.WriteLine("\n## DELETANDO FUNCIONÁRIO ##");
-        Console.Write("CPF (XXX.XXX.XXX-XX): ");
-        string cpf = Console.ReadLine();
-        if (CpfExiste(cpf))
-        {
-            foreach(var funcionario in funcionarios)
-            {
-                if (funcionario["CPF"] == cpf)
-                {
-                    funcionarios.Remove(funcionario);
-                    Console.WriteLine("FUNCIONÁRIO DELETADO COM SUCESSO.");
-                    break;
-                }
-            }
-        }
-        else
-        {
-            Console.WriteLine("CPF NÃO ENCONTRADO.");
-        }
+        int id = ValidarId();
+        funcionarios.RemoveAt(id);
+        Console.WriteLine("FUNCIONÁRIO DELETADO COM SUCESSO.");
+    }
+    else
+    {
+        Console.WriteLine("NENHUM FUNCIONÁRIO CADASTRADO.");
     }
 }
 
@@ -227,6 +197,30 @@ int MenuAtualizar()
         return num;
     }
     return num;
+}
+
+int ValidarId()
+{
+    int id;
+    while (true)
+    {
+        Console.Write("ID: ");
+        if (int.TryParse(Console.ReadLine(), out id))
+        {
+            if(id >= 0 && id < funcionarios.Count)
+            {
+                return id;
+            }
+            else
+            {
+                Console.WriteLine("ID NÃO EXISTE. POR FAVOR INSIRA NOVAMENTE.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("ID PRECISA SER UM NÚMERO INTEIRO. POR FAVOR INSIRA NOVAMENTE.");
+        }
+    } 
 }
 
 bool CpfExiste(string cpf)
