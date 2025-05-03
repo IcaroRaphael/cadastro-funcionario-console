@@ -51,10 +51,8 @@ void CadastrarFuncionario()
     string cpf = ValidarCpf();
     if (!CpfExiste(cpf))
     {
-        Console.Write("NOME: ");
-        string nome = Console.ReadLine();
-        Console.Write("CARGO: ");
-        string cargo = Console.ReadLine();
+        string nome = ValidarNome();
+        string cargo = ValidarCargo();
         string salario = ValidarSalario();
         string telefone = ValidarTelefone();
         funcionarios.Add(new Dictionary<string, string>{
@@ -110,16 +108,12 @@ void AtualizarFuncionario()
             switch (escolha)
             {
                 case 1:
-                    Console.Write("NOME: ");
-                    string nomeAtualizado = Console.ReadLine();
-                    funcionarios[id]["NOME"] = nomeAtualizado;
+                    funcionarios[id]["NOME"] = ValidarNome();
                     Console.WriteLine("NOME ATUALIZADO COM SUCESSO.");
                     executaAtualizarFuncionario = false;
                     break;
                 case 2:
-                    Console.Write("CARGO: ");
-                    string cargoAtualizado = Console.ReadLine();
-                    funcionarios[id]["CARGO"] = cargoAtualizado;
+                    funcionarios[id]["CARGO"] = ValidarCargo();
                     Console.WriteLine("CARGO ATUALIZADO COM SUCESSO.");
                     executaAtualizarFuncionario = false;
                     break;
@@ -316,6 +310,60 @@ string ValidarTelefone()
     return telefoneVerificado;
 }
 
+
+string ValidarNome()
+{
+    while (true)
+    {
+        Console.Write("NOME: ");
+        string nome = Console.ReadLine();
+        string pegaNumeros = new Regex(@"[^\d]").Replace(nome, @"");
+        string nomeSemEspaco = nome.Replace(" ", "");
+
+        if(pegaNumeros.Length == 0)
+        {
+            if(nomeSemEspaco.Length >= 3)
+            {
+                return nome;
+            }
+            else
+            {
+                Console.WriteLine("NOME PRECISA POSSUIR AO MENOS 3 LETRAS.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("NOME NÃO PODE POSSUIR NÚMEROS.");
+        }
+    }
+}
+
+string ValidarCargo()
+{
+    while (true)
+    {
+        Console.Write("CARGO: ");
+        string cargo = Console.ReadLine();
+        string pegaNumeros = new Regex(@"[^\d]").Replace(cargo, @"");
+        string cargoSemEspaco = cargo.Replace(" ", "");
+
+        if (pegaNumeros.Length == 0)
+        {
+            if (cargoSemEspaco.Length >= 3)
+            {
+                return cargo;
+            }
+            else
+            {
+                Console.WriteLine("CARGO PRECISA POSSUIR AO MENOS 3 LETRAS.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("CARGO NÃO PODE POSSUIR NÚMEROS.");
+        }
+    }
+}
 
 string ValidarCpf()
 {
