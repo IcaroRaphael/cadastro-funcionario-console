@@ -48,24 +48,31 @@ void CadastrarFuncionario()
 {
     Console.Clear();
     Console.WriteLine("## CADASTRANDO FUNCIONÁRIO ##\n");
-    string cpf = ValidarCpf();
-    if (!CpfExiste(cpf))
+    if (ConfirmaEscolha())
     {
-        string nome = ValidarNome();
-        string cargo = ValidarCargo();
-        string salario = ValidarSalario();
-        string telefone = ValidarTelefone();
-        funcionarios.Add(new Dictionary<string, string>{
+        string cpf = ValidarCpf();
+        if (!CpfExiste(cpf))
+        {
+            string nome = ValidarNome();
+            string cargo = ValidarCargo();
+            string salario = ValidarSalario();
+            string telefone = ValidarTelefone();
+            funcionarios.Add(new Dictionary<string, string>{
             {"CPF", cpf},
             {"NOME", nome},
             {"CARGO", cargo},
             {"SALARIO", salario},
             {"TELEFONE", telefone}
             });
+        }
+        else
+        {
+            Console.WriteLine("CPF JÁ CADASTRADO.");
+        }
     }
     else
     {
-        Console.WriteLine("CPF JÁ CADASTRADO.");
+        Console.WriteLine("CADASTRO CANCELADO.");
     }
 }
 
@@ -97,42 +104,50 @@ void AtualizarFuncionario()
     Console.Clear();
     if (funcionarios.Count > 0)
     {
-        VisualizarFuncionarios();
-        Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
-        int id = ValidarId();
-
-        bool executaAtualizarFuncionario = true;
-        while (executaAtualizarFuncionario)
+        if (ConfirmaEscolha())
         {
-            int escolha = MenuAtualizar();
-            switch (escolha)
+            VisualizarFuncionarios();
+            Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
+
+            int id = ValidarId();
+
+            bool executaAtualizarFuncionario = true;
+            while (executaAtualizarFuncionario)
             {
-                case 1:
-                    funcionarios[id]["NOME"] = ValidarNome();
-                    Console.WriteLine("NOME ATUALIZADO COM SUCESSO.");
-                    executaAtualizarFuncionario = false;
-                    break;
-                case 2:
-                    funcionarios[id]["CARGO"] = ValidarCargo();
-                    Console.WriteLine("CARGO ATUALIZADO COM SUCESSO.");
-                    executaAtualizarFuncionario = false;
-                    break;
-                case 3:
-                    funcionarios[id]["SALARIO"] = ValidarSalario();
-                    Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
-                    executaAtualizarFuncionario = false;
-                    break;
-                case 4:
-                    funcionarios[id]["TELEFONE"] = ValidarTelefone();
-                    Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
-                    executaAtualizarFuncionario = false;
-                    break;
-                default:
-                    Console.WriteLine("OPÇÃO INVÁLIDA.");
-                    Console.WriteLine("\nPressione qualquer tecla para tentar novamente...");
-                    Console.ReadKey();
-                    break;
+                int escolha = MenuAtualizar();
+                switch (escolha)
+                {
+                    case 1:
+                        funcionarios[id]["NOME"] = ValidarNome();
+                        Console.WriteLine("NOME ATUALIZADO COM SUCESSO.");
+                        executaAtualizarFuncionario = false;
+                        break;
+                    case 2:
+                        funcionarios[id]["CARGO"] = ValidarCargo();
+                        Console.WriteLine("CARGO ATUALIZADO COM SUCESSO.");
+                        executaAtualizarFuncionario = false;
+                        break;
+                    case 3:
+                        funcionarios[id]["SALARIO"] = ValidarSalario();
+                        Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
+                        executaAtualizarFuncionario = false;
+                        break;
+                    case 4:
+                        funcionarios[id]["TELEFONE"] = ValidarTelefone();
+                        Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
+                        executaAtualizarFuncionario = false;
+                        break;
+                    default:
+                        Console.WriteLine("OPÇÃO INVÁLIDA.");
+                        Console.WriteLine("\nPressione qualquer tecla para tentar novamente...");
+                        Console.ReadKey();
+                        break;
+                }
             }
+        }
+        else
+        {
+            Console.WriteLine("ATUALIZAÇÃO CANCELADA.");
         }
     }
     else
@@ -146,11 +161,18 @@ void DeletarFuncionario()
     Console.Clear();
     if(funcionarios.Count > 0)
     {
-        VisualizarFuncionarios();
-        Console.WriteLine("\n## DELETANDO FUNCIONÁRIO ##");
-        int id = ValidarId();
-        funcionarios.RemoveAt(id);
-        Console.WriteLine("FUNCIONÁRIO DELETADO COM SUCESSO.");
+        if (ConfirmaEscolha())
+        {
+            VisualizarFuncionarios();
+            Console.WriteLine("\n## DELETANDO FUNCIONÁRIO ##");
+            int id = ValidarId();
+            funcionarios.RemoveAt(id);
+            Console.WriteLine("FUNCIONÁRIO DELETADO COM SUCESSO.");
+        }
+        else
+        {
+            Console.WriteLine("DELEÇÃO CANCELADA.");
+        }
     }
     else
     {
@@ -429,4 +451,15 @@ bool CpfValido(string cpf)
         return false;
     }
     return true;
+}
+
+bool ConfirmaEscolha()
+{
+    Console.Write("DESEJA REALMENTE CONTINUAR? [\"SIM\" para continuar]: ");
+    string escolha = Console.ReadLine().ToUpper();
+    if(escolha == "SIM")
+    {
+        return true;
+    }
+    return false;
 }
