@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 List<Dictionary<string, string>> funcionarios = new List<Dictionary<string, string>>();
 
@@ -50,25 +49,14 @@ void CadastrarFuncionario()
     Console.WriteLine("## CADASTRANDO FUNCIONÁRIO ##\n");
     if (ConfirmaEscolha())
     {
-        string cpf = ValidarCpf();
-        if (!CpfExiste(cpf))
-        {
-            string nome = ValidarNome();
-            string cargo = ValidarCargo();
-            string salario = ValidarSalario();
-            string telefone = ValidarTelefone();
-            funcionarios.Add(new Dictionary<string, string>{
-            {"CPF", cpf},
+        string nome = ValidarNome();
+        string cargo = ValidarCargo();
+        string salario = ValidarSalario();
+        funcionarios.Add(new Dictionary<string, string>{
             {"NOME", nome},
             {"CARGO", cargo},
-            {"SALARIO", salario},
-            {"TELEFONE", telefone}
+            {"SALARIO", salario}
             });
-        }
-        else
-        {
-            Console.WriteLine("CPF JÁ CADASTRADO.");
-        }
     }
     else
     {
@@ -79,7 +67,7 @@ void CadastrarFuncionario()
 void VisualizarFuncionarios()
 {
     Console.Clear();
-    if(funcionarios.Count > 0)
+    if (funcionarios.Count > 0)
     {
         Console.WriteLine("## VISUALIZANDO FUNCIONÁRIOS ##\n");
         Console.WriteLine("----------");
@@ -104,11 +92,11 @@ void AtualizarFuncionario()
     Console.Clear();
     if (funcionarios.Count > 0)
     {
+        Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
         if (ConfirmaEscolha())
         {
             VisualizarFuncionarios();
             Console.WriteLine("\n## ATUALIZANDO FUNCIONÁRIO ##");
-
             int id = ValidarId();
 
             bool executaAtualizarFuncionario = true;
@@ -130,11 +118,6 @@ void AtualizarFuncionario()
                     case 3:
                         funcionarios[id]["SALARIO"] = ValidarSalario();
                         Console.WriteLine("SALARIO ATUALIZADO COM SUCESSO.");
-                        executaAtualizarFuncionario = false;
-                        break;
-                    case 4:
-                        funcionarios[id]["TELEFONE"] = ValidarTelefone();
-                        Console.WriteLine("TELEFONE ATUALIZADO COM SUCESSO.");
                         executaAtualizarFuncionario = false;
                         break;
                     default:
@@ -159,8 +142,9 @@ void AtualizarFuncionario()
 void DeletarFuncionario()
 {
     Console.Clear();
-    if(funcionarios.Count > 0)
+    if (funcionarios.Count > 0)
     {
+        Console.WriteLine("\n## DELETANDO FUNCIONÁRIO ##");
         if (ConfirmaEscolha())
         {
             VisualizarFuncionarios();
@@ -206,7 +190,6 @@ int MenuAtualizar()
     Console.WriteLine("1 - NOME");
     Console.WriteLine("2 - CARGO");
     Console.WriteLine("3 - SALARIO");
-    Console.WriteLine("4 - TELEFONE");
     Console.Write("Escolha: ");
     if (int.TryParse(Console.ReadLine(), out num))
     {
@@ -223,7 +206,7 @@ int ValidarId()
         Console.Write("ID: ");
         if (int.TryParse(Console.ReadLine(), out id))
         {
-            if(id >= 0 && id < funcionarios.Count)
+            if (id >= 0 && id < funcionarios.Count)
             {
                 return id;
             }
@@ -236,27 +219,6 @@ int ValidarId()
         {
             Console.WriteLine("ID PRECISA SER UM NÚMERO INTEIRO. POR FAVOR INSIRA NOVAMENTE.");
         }
-    } 
-}
-
-bool CpfExiste(string cpf)
-{
-    int contCpf = 0;
-    foreach(var funcionario in funcionarios)
-    {
-        if(funcionario["CPF"] == cpf)
-        {
-            contCpf++;
-            break;
-        }
-    }
-    if(contCpf == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
     }
 }
 
@@ -279,60 +241,6 @@ string ValidarSalario()
     return string.Format($"{salarioValidado:C}");
 }
 
-string ValidarTelefone()
-{
-    string telefoneVerificado = "";
-    bool executarValidarTelefone = true;
-    while (executarValidarTelefone)
-    {
-        Console.Write("Telefone (DDD)9XXXX-XXXX/(DDD)XXXX-XXXX: ");
-        Regex pegaNumeros = new Regex(@"[^\d]");
-        telefoneVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if((telefoneVerificado.Length == 10) || (telefoneVerificado.Length == 11 && telefoneVerificado[2].ToString() == "9"))
-        {
-            string[] ListaCodigos = new string[]
-                {
-                    "11", "12", "13", "14", "15", "16", "17", "18", "19",
-                    "21", "22", "24", "27", "28",
-                    "31", "32", "33", "34", "35", "37", "38",
-                    "41", "42", "43", "44", "45", "46",
-                    "47", "48", "49",
-                    "51", "53", "54", "55",
-                    "61", "62", "63", "64",
-                    "65", "66", "67", "68", "69",
-                    "71", "73", "74", "75", "77", "79",
-                    "81", "82", "83", "84", "85", "86", "87", "88", "89",
-                    "91", "92", "93", "94", "95", "96", "97", "98", "99"
-                };
-            string ddd = telefoneVerificado.Substring(0,2);
-            
-
-            if (ListaCodigos.Contains(ddd))
-            {
-                if (telefoneVerificado.Length == 10)
-                {
-                    telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 4)}-{telefoneVerificado.Substring(6, 4)}");
-                }
-                else if (telefoneVerificado.Length == 11)
-                {
-                    telefoneVerificado = string.Format($"{"+55"} {ddd} {telefoneVerificado.Substring(2, 5)}-{telefoneVerificado.Substring(7, 4)}");
-                }
-                executarValidarTelefone = false;
-            }
-            else
-            {
-                Console.WriteLine("DDD INVÁLIDO. POR FAVOR INSIRA UM DDD VÁLIDO.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("TELEFONE INVÁLIDO. POR FAVOR INSIRA UM TELEFONE VÁLIDO.");
-        }
-    }
-    return telefoneVerificado;
-}
-
-
 string ValidarNome()
 {
     while (true)
@@ -342,9 +250,9 @@ string ValidarNome()
         string pegaNumeros = new Regex(@"[^\d]").Replace(nome, @"");
         string nomeSemEspaco = nome.Replace(" ", "");
 
-        if(pegaNumeros.Length == 0)
+        if (pegaNumeros.Length == 0)
         {
-            if(nomeSemEspaco.Length >= 3)
+            if (nomeSemEspaco.Length >= 3)
             {
                 return nome;
             }
@@ -387,77 +295,11 @@ string ValidarCargo()
     }
 }
 
-string ValidarCpf()
-{
-    string cpfVerificado = "";
-    bool executarValidarCpf = true;
-    while (executarValidarCpf)
-    {
-        Console.Write("CPF: ");
-        Regex pegaNumeros = new Regex(@"[^\d]");
-        cpfVerificado = pegaNumeros.Replace(Console.ReadLine(), @"");
-        if (CpfValido(cpfVerificado))
-        {
-            executarValidarCpf = false;
-        }
-        else
-        {
-            Console.WriteLine("CPF INVÁLIDO. POR FAVOR INSIRA UM CPF VÁLIDO.");
-        }
-    }
-    return string.Format($"{cpfVerificado.Substring(0, 3)}.{cpfVerificado.Substring(3, 3)}.{cpfVerificado.Substring(6, 3)}-{cpfVerificado.Substring(9, 2)}");
-}
-
-
-bool CpfValido(string cpf)
-{
-    if((cpf.Length != 11) || (cpf == new string(cpf[0], 11)))
-    {
-        return false;
-    }
-
-    int digitoVerificadorCorreto1 = 0;
-    int digitoVerificadorCorreto2 = 0;
-    for(int i = 2; i > 0; i--)
-    {
-        int soma = 0;
-        for(int j = 0; j < cpf.Length-i; j++)
-        {
-            soma += (cpf[j] - '0') * (12 - i - j);
-        }
-        if(soma % 11 == 0 || soma % 11 == 1)
-        {
-            if(i == 2)
-            {
-                digitoVerificadorCorreto1 = 0;
-            } else if(i == 1)
-            {
-                digitoVerificadorCorreto2 = 0;
-            }
-        } else
-        {
-            if (i == 2)
-            {
-                digitoVerificadorCorreto1 = 11 - (soma % 11);
-            }
-            else if (i == 1)
-            {
-                digitoVerificadorCorreto2 = 11 - (soma % 11);
-            }
-        }
-    }
-    if(((cpf[9] - '0') != digitoVerificadorCorreto1) || ((cpf[10] - '0') != digitoVerificadorCorreto2))
-    {
-        return false;
-    }
-    return true;
-}
-
 bool ConfirmaEscolha()
 {
     Console.Write("DESEJA REALMENTE CONTINUAR? [\"SIM\" para continuar]: ");
     string escolha = Console.ReadLine().ToUpper();
-    if(escolha == "SIM")
+    if (escolha == "SIM")
     {
         return true;
     }
